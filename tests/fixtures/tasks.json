@@ -17,5 +17,10 @@
     "update" : {
         "name": "Pagar conta de luz",
         "is_done": false
+    },
+
+    "delete": {
+        "name": "Estudar JS",
+        "is_done": false
     }
 }
