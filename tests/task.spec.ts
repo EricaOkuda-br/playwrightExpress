@@ -1,41 +1,37 @@
-import { test, expect } from '@playwright/test'
+import { test} from '@playwright/test'
+import { TaskModel } from './fixtures/task.model'
+import { deleteTaskByHelper, postTak } from './support/herlpers'
+import { TasksPage } from './support/pages/tasks'
 
 
 test('Deve poder cadastrar uma nova tarefa', async ({ page, request }) => {
-
-    const taskName = 'ler um livro sobre type'
-    await request.delete('http://localhost:3333/helper/tasks/' + taskName)
-
-    await page.goto('http://localhost:3000/')
-    const inputTaskName = page.locator('input[placeholder="Add a new Task"]')
-    await inputTaskName.fill(taskName)
-
-    await page.click('css=button >> text=Create')
-
-    const target = page.locator('css=.task-item p >> text=' + taskName)
-    await expect(target).toBeVisible()
-})
-
-test('Não deve permitir tarefa duplicada', async ({page,request}) => {
-
-    const task = {
+    const task: TaskModel = {
         name: 'Estudar A',
-        is_done: 'false'
+        is_done: false
     }
 
-    await request.delete('http://localhost:3333/helper/tasks/' + task.name)
+    await deleteTaskByHelper(request, task.name)
 
-    const newTask = await request.post('http://localhost:3333/tasks', {data: task})
+    const tasksPage: TasksPage = new TasksPage(page)
+    await tasksPage.go()
+    await tasksPage.create(task)
 
-    expect(newTask.ok()).toBeTruthy()
+    await tasksPage.ShouldHaveText(task.name)
+})
 
-    await page.goto('http://localhost:3000/')
+test('Não deve permitir tarefa duplicada', async ({ page, request }) => {
 
-    const inputTaskName = page.locator('input[placeholder="Add a new Task"]')
-    await inputTaskName.fill(task.name)
-    await page.click('css=button >> text=Create')
+    const task: TaskModel = {
+        name: 'Estudar A',
+        is_done: false
+    }
 
-    const target = page.locator('.swal2-html-container')
-    await expect(target).toHaveText('Task already exists!')
+    await deleteTaskByHelper(request, task.name)
+    await postTak(request, task)
 
+    const tasksPage: TasksPage = new TasksPage(page)
+    await tasksPage.go()
+    await tasksPage.create(task)
+    await tasksPage.alertHaveText('Task already exists!')
+   
 })
