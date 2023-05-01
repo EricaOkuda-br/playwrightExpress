@@ -1,0 +1,16 @@
+{
+    "success" : {
+        "name": "Estudar A",
+        "is_done": false
+    },
+
+    "duplicate": {
+        "name": "Estudar A",
+        "is_done": false
+    },
+
+    "required" : {
+        "name": "Preencha este campo.",
+        "is_done": false
+    }
+}
