@@ -4,7 +4,9 @@ import { deleteTaskByHelper, postTak } from './support/herlpers'
 import { TasksPage } from './support/pages/tasks'
 import data from './fixtures/tasks.json'
 
+test.describe('Cadastros', () => {
 
+})
 test('Deve poder cadastrar uma nova tarefa', async ({ page, request }) => {
     const task = data.success as TaskModel
 
@@ -30,7 +32,7 @@ test('Não deve permitir tarefa duplicada', async ({ page, request }) => {
 
 })
 
-test.only('campos obrigatório', async ({ page }) => {
+test('campos obrigatório', async ({ page }) => {
     const task = data.required as TaskModel
 
     const tasksPage: TasksPage = new TasksPage(page)
@@ -38,6 +40,24 @@ test.only('campos obrigatório', async ({ page }) => {
     await tasksPage.create(task)
 
     const validationMessage = await tasksPage.inputTaskName.evaluate(e => (e as HTMLInputElement).validationMessage)
-    expect(validationMessage).toEqual('Preencha este campo.')
+    expect(validationMessage).toEqual('This is a required field')
 
 })
+
+test.describe('Atualização', () => {
+    test('deve concluir uma tarefa', async ({ page, request }) => {
+        const task = data.update as TaskModel
+
+        await deleteTaskByHelper(request, task.name)
+        await postTak(request, task)
+
+        const tasksPage: TasksPage = new TasksPage(page)
+        await tasksPage.go()
+        await tasksPage.toggle(task.name)
+        await tasksPage.shouldBeDone(task.name)
+
+
+    })
+
+})
+

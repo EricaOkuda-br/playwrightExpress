@@ -10,7 +10,12 @@
     },
 
     "required" : {
-        "name": "Preencha este campo.",
+        "name": "",
+        "is_done": false
+    },
+
+    "update" : {
+        "name": "Pagar conta de luz",
         "is_done": false
     }
 }
